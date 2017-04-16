@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/Button">
+        <file>Icons/Toggle_OFF.png</file>
+        <file>Icons/Toggle_ON.png</file>
+    </qresource>
+</RCC>
