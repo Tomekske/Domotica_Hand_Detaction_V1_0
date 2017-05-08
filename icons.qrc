@@ -2,5 +2,12 @@
     <qresource prefix="/Button">
         <file>Icons/Toggle_OFF.png</file>
         <file>Icons/Toggle_ON.png</file>
+        <file>Icons/Alarm.png</file>
+        <file>Icons/Light.png</file>
+        <file>Icons/return.png</file>
+        <file>Icons/Settings.png</file>
+        <file>Icons/Temp.png</file>
+        <file>Icons/save.png</file>
+        <file>Icons/noSignal.png</file>
     </qresource>
 </RCC>

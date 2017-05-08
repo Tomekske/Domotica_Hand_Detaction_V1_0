@@ -7,18 +7,18 @@
 class myDateTime
 {
 public:
-    myDateTime();
+    myDateTime(QTime time,QDate date);
     void setTime(QTime time);
     QTime getTime();
 
     void setDate(QDate date);
     QDate getDate();
 
-    QString get24Hours();
-    QString get12Hours();
+    QString time24Hours();
+    QString time12Hours();
 
-    QString getEuropeanDate();
-    QString getAmericanDate();
+    QString europeanDate();
+    QString americanDate();
 
 
 private:
