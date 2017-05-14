@@ -11,6 +11,7 @@
 #include "mydatetime.h"
 
 #include <QDebug>
+#include <QProcess>
 #define QD qDebug() << __FILE__ << __LINE__
 
 namespace Ui {
@@ -63,6 +64,14 @@ private slots:
      void amDate();
      void euDate();
 
+     //openCV
+     void openCVMapper();
+     void openExecutable();
+     void on_checkCVCursor_clicked();
+     void on_checkCVRecord_clicked();
+     void on_checkCVStabilisator_clicked();
+     void on_checkCVBlur_clicked();
+
      //settings
      void settingsmapper();
      void saveSettings();
@@ -102,6 +111,13 @@ private:
     int dialValue = 0;
     bool startFan = false;
     bool fanStarted = false;
+
+    //openCV
+    int enableCursor = 0;
+    int enableBlur = 0;
+    int cursorStabilisator = 0;
+    int enableRecording = 0;
+    QProcess *proc;
 };
 
 #endif // MAINWINDOW_H

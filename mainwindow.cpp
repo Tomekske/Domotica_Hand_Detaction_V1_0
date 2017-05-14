@@ -10,6 +10,10 @@
 #include <QPushButton>
 #include <QSettings>
 #include "mydatetime.h";
+#include <QDesktopServices>
+#include <QUrl>
+#include <QFileDialog>
+#include <QProcess>
 
 #define GOOD        "lime"
 #define BAD         "red"
@@ -25,6 +29,10 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     QMainWindow::showFullScreen();
 
+
+
+    proc = new QProcess(this);
+
     dateTimeMapper();
     menuMapper();
     loadSettings();
@@ -32,6 +40,7 @@ MainWindow::MainWindow(QWidget *parent) :
     lightsMapper();
     tempMapper();
     alarmMapper();
+    openCVMapper();
     settingsmapper();
 }
 
@@ -649,6 +658,111 @@ void MainWindow::euDate()
 
 
 //--------------------------------------------------------------------------------------------------------------//
+// 											     openCV      	           				        				//
+//--------------------------------------------------------------------------------------------------------------//
+
+
+
+/**
+  * @brief  Function to map openCv funcions
+  * @param  None
+  * @retval None
+  */
+void MainWindow::openCVMapper()
+{
+    connect(ui->btnWebcam,SIGNAL(clicked(bool)),this,SLOT(openExecutable()));
+}
+
+/**
+  * @brief  Function to open external executable
+  * @param  None
+  * @retval None
+  */
+void MainWindow::openExecutable()
+{
+    QString t = "Hand_Detection.exe";
+    QStringList arguments;
+    arguments.append(QString::number(enableCursor));
+    arguments.append(QString::number(cursorStabilisator));
+    arguments.append(QString::number(enableRecording));
+    arguments.append(QString::number(enableBlur));
+    QDir::setCurrent("D:/Tomek/Programs/Hand_Detection/x64/Debug/");
+    QString program= t;
+
+    //if btnWebcam is enabled then we execute external executable
+    if(ui->btnWebcam->isChecked() == true)
+    {
+        ui->btnWebcam->setStyleSheet("border-image: url(:/Button/Icons/Webcam_ON.png)");
+        console(GOOD,"Webcam turned ON!");
+        statusLabel(ui->lblCam,ON);
+        proc->start(program,arguments);
+    }
+
+    //if btnWebcam is disabled then we kill external executable
+    else
+    {
+        ui->btnWebcam->setStyleSheet("border-image: url(:/Button/Icons/Webcam_OFF.png)");
+        console(GOOD,"Webcam turned OFF!");
+        statusLabel(ui->lblCam,OFF);
+        proc->kill();
+    }
+}
+
+/**
+  * @brief  Function to check/uncheck setting which are passed as argument to executable
+  * @param  None
+  * @retval None
+  */
+void MainWindow::on_checkCVCursor_clicked()
+{
+    if(ui->checkCVCursor->isChecked() == true)
+        enableCursor = 1;
+    else
+        enableCursor = 0;
+}
+
+/**
+  * @brief  Function to check/uncheck setting which are passed as argument to executable
+  * @param  None
+  * @retval None
+  */
+void MainWindow::on_checkCVRecord_clicked()
+{
+    if(ui->checkCVRecord->isChecked() == true)
+        enableRecording = 1;
+    else
+        enableRecording = 0;
+}
+
+/**
+  * @brief  Function to check/uncheck setting which are passed as argument to executable
+  * @param  None
+  * @retval None
+  */
+void MainWindow::on_checkCVStabilisator_clicked()
+{
+    if(ui->checkCVStabilisator->isChecked() == true)
+        cursorStabilisator = 1;
+    else
+        cursorStabilisator = 0;
+}
+
+/**
+  * @brief  Function to check/uncheck setting which are passed as argument to executable
+  * @param  None
+  * @retval None
+  */
+void MainWindow::on_checkCVBlur_clicked()
+{
+    if(ui->checkCVBlur->isChecked() == true)
+        enableBlur = 1;
+    else
+        enableBlur = 0;
+}
+
+
+
+//--------------------------------------------------------------------------------------------------------------//
 // 											     Settings      	           				        				//
 //--------------------------------------------------------------------------------------------------------------//
 
@@ -676,6 +790,10 @@ void MainWindow::saveSettings()
     settings.setValue("Time",sTime); //set setings
     settings.setValue("Date",sDate);
     settings.setValue("Temperature",sTemp);
+    settings.setValue("Enable cursor",QString::number(enableCursor));
+    settings.setValue("Enable blur",QString::number(enableBlur));
+    settings.setValue("Cursor Stabilisator",QString::number(cursorStabilisator));
+    settings.setValue("start recording",QString::number(enableRecording));
     settings.endGroup();
     console(GOOD,"Settings succesfully saved!");
 }
@@ -692,6 +810,10 @@ void MainWindow::loadSettings()
     sTime = settings.value("Time").toString(); //get settings
     sDate = settings.value("Date").toString();
     sTemp = settings.value("Temperature").toString();
+    enableCursor = settings.value("Enable cursor").toInt();
+    enableBlur = settings.value("Enable blur").toInt();
+    cursorStabilisator = settings.value("Cursor Stabilisator").toInt();
+    enableRecording = settings.value("start recording").toInt();
     settings.endGroup();
 
     if(sTime == "eu")
@@ -708,6 +830,26 @@ void MainWindow::loadSettings()
         ui->radioTempC->setChecked(true);
     else
         ui->radioTempF->setChecked(true);
+
+    if(enableCursor == 1)
+        ui->checkCVCursor->setChecked(true);
+    else
+        ui->checkCVCursor->setChecked(false);
+
+    if(enableBlur == 1)
+        ui->checkCVBlur->setChecked(true);
+    else
+        ui->checkCVBlur->setChecked(false);
+
+    if(cursorStabilisator == 1)
+        ui->checkCVStabilisator->setChecked(true);
+    else
+        ui->checkCVStabilisator->setChecked(false);
+
+    if(enableRecording == 1)
+        ui->checkCVRecord->setChecked(true);
+    else
+        ui->checkCVRecord->setChecked(false);
 
     console(GOOD,"Settings succesfully loaded!");
 }
@@ -769,3 +911,6 @@ void MainWindow::statusLabel(QLabel *lbl, QString status)
     else
         lbl->setStyleSheet("background-color: #f5f5f5; color: black;");
 }
+
+
+
