@@ -9,7 +9,7 @@
 #include <QSerialPortInfo>
 #include <QPushButton>
 #include <QSettings>
-#include "mydatetime.h";
+#include "mydatetime.h"
 #include <QDesktopServices>
 #include <QUrl>
 #include <QFileDialog>
@@ -22,6 +22,11 @@
 #define LOW         0
 #define ON          "ON"
 #define OFF         "OFF"
+#define LED_ON      ":/Button/Icons/Toggle_ON.png"
+#define LED_OFF     ":/Button/Icons/Toggle_OFF.png"
+#define CAM_ON      ":/Button/Icons/Webcam_ON.png"
+#define CAM_OFF     ":/Button/Icons/Webcam_OFF.png"
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -284,13 +289,13 @@ void MainWindow::enableLights()
         if(btn->isChecked() == true) //Button is on
         {
             str = serialString("led",HIGH,lightNumber);
-            loadImage(btn,ON);
+            loadImage(btn,LED_ON);
             console(GOOD,"Lights in Room " + QByteArray::number(lightNumber + 1) + " turned ON");
         }
         else //Button is off
         {
            str = serialString("led",LOW,lightNumber);
-           loadImage(btn,OFF);
+           loadImage(btn,LED_OFF);
            console(GOOD,"Lights in Room " + QByteArray::number(lightNumber + 1) + " turned OFF");
         }
         serial->write(str);
@@ -351,7 +356,7 @@ void MainWindow::enableFan()
         if(btn->isChecked() == true) //Button is on
         {
             str = serialString("fan",HIGH,fanNumber);
-            loadImage(btn,ON);
+            loadImage(btn,LED_ON);
             statusLabel(ui->lblFan,ON);
             console(GOOD,"Fan turned ON");
         }
@@ -360,7 +365,7 @@ void MainWindow::enableFan()
         else
         {
             str = serialString("fan",LOW,fanNumber);
-            loadImage(btn,OFF);
+            loadImage(btn,LED_ON);
             statusLabel(ui->lblFan,OFF);
             console(GOOD,"Fan turned OFF");
             ui->checkAutoFan->setChecked(false);
@@ -549,7 +554,7 @@ void MainWindow::alarm()
         if(ui->btnAlarm->isChecked() == true) //Button is on
         {
             str = serialString("alarm",HIGH,0);
-            loadImage(ui->btnAlarm,ON);
+            loadImage(ui->btnAlarm,LED_ON);
             statusLabel(ui->lblAlarm,ON);
 
             console(GOOD,"Alarm turned ON");
@@ -557,7 +562,7 @@ void MainWindow::alarm()
         else //Button is off
         {
            str = serialString("alarm",LOW,0);
-           loadImage(ui->btnAlarm,OFF);
+           loadImage(ui->btnAlarm,LED_OFF);
            console(GOOD,"Alarm turned OFF");
            statusLabel(ui->lblAlarm,OFF);
         }
@@ -694,7 +699,7 @@ void MainWindow::openExecutable()
     {
         ui->btnWebcam->setStyleSheet("border-image: url(:/Button/Icons/Webcam_ON.png)");
         console(GOOD,"Webcam turned ON!");
-        statusLabel(ui->lblCam,ON);
+        loadImage(ui->btnWebcam,CAM_ON);
         proc->start(program,arguments);
     }
 
@@ -703,7 +708,7 @@ void MainWindow::openExecutable()
     {
         ui->btnWebcam->setStyleSheet("border-image: url(:/Button/Icons/Webcam_OFF.png)");
         console(GOOD,"Webcam turned OFF!");
-        statusLabel(ui->lblCam,OFF);
+        loadImage(ui->btnWebcam,CAM_OFF);
         proc->kill();
     }
 }
@@ -868,15 +873,9 @@ void MainWindow::loadSettings()
   * @param  status: state of button (ON/OFF)
   * @retval None
   */
-void MainWindow::loadImage(QPushButton *btn,QString status)
+void MainWindow::loadImage(QPushButton *btn,QString path)
 {
-    QString pathRelative;
-
-    if(status == "ON")
-        pathRelative = "border-image: url(:/Button/Icons/Toggle_ON.png)";
-    else
-        pathRelative = "border-image: url(:/Button/Icons/Toggle_OFF.png)";
-
+    QString pathRelative = QString("border-image: url(%1)").arg(path);
     btn->setStyleSheet(pathRelative);
 }
 

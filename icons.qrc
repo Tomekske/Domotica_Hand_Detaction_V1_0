@@ -11,5 +11,6 @@
         <file>Icons/Webcam_OFF.png</file>
         <file>Icons/Webcam_ON.png</file>
         <file>Icons/noSignal.png</file>
+        <file>Icons/windowsIcon.ico</file>
     </qresource>
 </RCC>

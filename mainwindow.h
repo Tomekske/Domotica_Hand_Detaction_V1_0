@@ -80,7 +80,7 @@ private slots:
      //style
      void loadImage(QPushButton *btn,QString status);
      void console(QString color,QString text);
-     void statusLabel(QLabel *lbl,QString status);
+     void statusLabel(QLabel *lbl,QString path);
 
 private:
     Ui::MainWindow *ui;
